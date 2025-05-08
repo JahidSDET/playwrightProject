@@ -1,20 +1,24 @@
 name: Playwright Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select environment to test against"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        environment: [staging, production, dev] # List your environments here
     env:
-      BASE_URL: ${{ matrix.environment == 'staging' && 'https://staging.example.com' || (matrix.environment == 'production' && 'https://production.example.com' || 'https://dev.example.com') }}
+      BASE_URL: ${{ github.event.inputs.environment == 'staging' && 'https://staging.example.com' || (github.event.inputs.environment == 'production' && 'https://production.example.com' || 'https://dev.example.com') }}
 
     steps:
       - name: Checkout repository
@@ -32,11 +36,11 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        run: npx playwright test --project=Chromium # Only execute in Chromium
+        run: npx playwright test --project=Chromium
 
       - name: Upload Playwright report as artifact
         if: always()
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: playwright-report-${{ matrix.environment }}-${{ github.run_id }}
+          name: playwright-report-${{ github.event.inputs.environment }}-${{ github.run_id }}
           path: playwright-report
