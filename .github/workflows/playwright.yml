@@ -10,6 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        environment: [staging, production, dev] # List your environments here
+    env:
+      # You can define environment-specific variables here
+      BASE_URL: ${{ matrix.environment == 'staging' && 'https://automationexercise.com' || (matrix.environment == 'production' && 'https://automationexercise.com' || 'https://automationexercise.com') }}
+      # Optionally add other environment-specific variables like:
+      # API_KEY: ${{ secrets.API_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
