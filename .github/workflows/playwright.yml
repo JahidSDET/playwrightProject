@@ -17,20 +17,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18" # or the version your project needs
+          node-version: "18"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Install Playwright Browsers
-        run: npx --yes playwright install --with-deps
+        run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
         run: npx playwright test
 
       - name: Upload Playwright report as artifact
         if: always()
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: playwright-report
           path: playwright-report
