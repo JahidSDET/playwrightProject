@@ -26,15 +26,11 @@ export default defineConfig({
   projects: [
     {
       name: 'Chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        baseURL: process.env.BASE_URL || 'https://automationexercise.com', // Dynamically set the baseURL
+      },
     },
-    {
-      name: 'Firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'WebKit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // Remove Firefox and WebKit projects, only keeping Chromium.
   ],
 });
