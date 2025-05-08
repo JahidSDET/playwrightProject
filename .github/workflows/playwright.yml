@@ -15,7 +15,7 @@ jobs:
         environment: [staging, production, dev] # List your environments here
     env:
       # You can define environment-specific variables here
-      BASE_URL: ${{ matrix.environment == 'staging' && 'https://automationexercise.com' || (matrix.environment == 'production' && 'https://automationexercise.com' || 'https://automationexercise.com') }}
+      BASE_URL: ${{ matrix.environment == 'staging' && 'https://staging.example.com' || (matrix.environment == 'production' && 'https://example.com' || 'https://dev.example.com') }}
       # Optionally add other environment-specific variables like:
       # API_KEY: ${{ secrets.API_KEY }}
 
@@ -35,11 +35,11 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        run: npx playwright test
+        run: npx playwright test --project=${{ matrix.environment }} # Optional: specify a project based on environment
 
       - name: Upload Playwright report as artifact
         if: always()
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.environment }}-${{ github.run_id }} # Adding matrix.environment and run_id for uniqueness
           path: playwright-report
